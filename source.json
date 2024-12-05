@@ -1,0 +1,26 @@
+{
+    "name":"2023年10月VRC同期会ポスター",
+    "id":"com.nomlas.202310poster",
+    "url":"https://nomlasvrc.github.io/202310VRCPoster/index.json",
+    "author":{
+        "name":"nomlas",
+        "url":"https://x.com/nomlasvrc"
+    },
+    "description":"2023年10月VRC同期会ポスター",
+    "infoLink":{
+        "url":"https://nomlasvrc.github.io/202310VRCPoster",
+        "text":"View on GitHub"
+    },
+    "bannerUrl":"banner.png",
+    "githubRepos":[
+        "nomlasvrc/202310VRCPoster"
+    ],
+    "packages":[
+        {
+            "name":"com.nomlas.202310poster",
+            "releases":[
+                "https://github.com/nomlasvrc/202310VRCPoster/releases/download/1.2.0/com.nomlas.202310poster-1.2.0.zip"
+            ]
+        }
+    ]
+}
