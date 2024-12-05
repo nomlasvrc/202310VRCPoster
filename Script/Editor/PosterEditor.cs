@@ -50,7 +50,7 @@ namespace Nomlas.Poster
             {
                 EditorGUILayout.HelpBox("アスペクト比が0以下になっています！", MessageType.Error);
             }
-            if (GUILayout.Button(JPENText(poster.JapaneseMode, "リセット", "Reset")))
+            if (GUILayout.Button(JPENText(poster.JapaneseMode, "アスペクト比をリセット", "Reset")))
             {
                 poster.aspectRaito = 0.7071f;
             }
