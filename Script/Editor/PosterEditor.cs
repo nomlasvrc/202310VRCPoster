@@ -1,7 +1,6 @@
 
 using UnityEditor;
 using UnityEngine;
-using VRC.SDKBase;
 
 namespace Nomlas.Poster
 {
