@@ -1,0 +1,14 @@
+{
+  "name": "com.nomlas.202310poster",
+  "displayName": "2023年10月VRC同期会ポスター",
+  "version": "1.2.0",
+  "description": "2023年10月VRC同期会ポスター",
+  "dependencies": {},
+  "gitDependencies": {},
+  "author": {
+    "name": "nomlas"
+  },
+  "legacyFolders": {},
+  "legacyFiles": {},
+  "localPath": ""
+}

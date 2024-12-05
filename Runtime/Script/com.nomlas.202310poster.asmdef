@@ -1,13 +1,15 @@
 {
-    "name": "PosterEditor",
+    "name": "com.nomlas.202310poster",
     "rootNamespace": "",
     "references": [
-        "GUID:3a831ae84a5dd094b818016db00134f1",
-        "GUID:99835874ee819da44948776e0df4ff1d"
+        "VRC.SDK3",
+        "VRC.SDKBase",
+        "VRC.Udon",
+        "UdonSharp.Runtime",
+        "Unity.TextMeshPro",
+        "VRC.Udon.Serialization.OdinSerializer"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
