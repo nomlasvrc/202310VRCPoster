@@ -190,10 +190,7 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: version
-      Entry: 1
-      Data: v1.1.2
+    SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 5768916983934824696}
   JapaneseMode: 1
   picUrls:
