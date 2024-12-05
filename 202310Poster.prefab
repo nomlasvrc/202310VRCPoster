@@ -183,16 +183,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
-    SerializedFormat: 0
+    SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
+    SerializationNodes:
+    - Name: version
+      Entry: 1
+      Data: v1.1.2
   _udonSharpBackingUdonBehaviour: {fileID: 5768916983934824696}
-  JapaneseMode: 0
+  JapaneseMode: 1
   picUrls:
   - url: https://dl.dropboxusercontent.com/scl/fi/aj6jg29u85qb4jj35uhl8/1.png?rlkey=ihps3okzn5l8heunbq1l1sgl9&dl=1
   - url: https://dl.dropboxusercontent.com/scl/fi/oaa9v10cwlhts6vdmcmy7/2.png?rlkey=iqkpkxt1a8p2pr9tk5ahctgr1&dl=1
@@ -210,8 +213,10 @@ MonoBehaviour:
     url: https://dl.dropboxusercontent.com/scl/fi/su7l759wrc041lkc2u66t/data.json?rlkey=tgq8oumuceal88h6mwy7mnid2&dl=1
   slideTime: 20
   startDelayTime: 0
+  aspectRaito: 0
   picture: {fileID: 1896936492960149447}
   message: {fileID: 8206375801081762916}
+  animator: {fileID: 6512784540068080484}
 --- !u!114 &5768916983934824696
 MonoBehaviour:
   m_ObjectHideFlags: 0

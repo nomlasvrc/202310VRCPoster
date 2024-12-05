@@ -20,6 +20,7 @@ namespace Nomlas.Poster
         [SerializeField] private VRCUrl lengthURL;
         [SerializeField] public int slideTime;
         [SerializeField] public int startDelayTime;
+        [SerializeField] public float aspectRaito;
 
         [SerializeField] public GameObject picture;
         [SerializeField] public TextMeshProUGUI message;
@@ -98,7 +99,7 @@ namespace Nomlas.Poster
                     posterLength = int.Parse(value.String);
                     stringLoaded = true;
                     Dlog($"StringLoading成功、ポスターは{posterLength}枚です");
-                    if (downloadedTextures[0] != null) //1枚目ImageLoadingより遅かった場合
+                    if (loadedPosterIndex >= 0) //1枚目ImageLoadingより遅かった場合
                     {
                         Dlog("2枚目以降のポスターのImageLoadingを開始します");
                         LoadPoster();
@@ -135,8 +136,9 @@ namespace Nomlas.Poster
 
         private void SyncPosterIndex() //発火タイミングを調整する
         {
-            nextIndex = ST() % (slideTime * posterLength) / slideTime - 1;
-            int offset = slideTime - (ST() % slideTime);
+            int elapsedSeconds = GetElapsedSeconds();
+            nextIndex = elapsedSeconds % (slideTime * posterLength) / slideTime - 1;
+            int offset = slideTime - (elapsedSeconds % slideTime);
             Dlog($"タイミング調整中。{offset}秒後にスライドショーを開始します");
             TMPMessage("All posters have been loaded. Adjusting timing...", "全ポスター読み込み完了。まもなく同期します...");
             SendCustomEventDelayedSeconds(nameof(StartLoadNextPoster), offset);
@@ -162,8 +164,7 @@ namespace Nomlas.Poster
             {
                 nextIndex = 0;
             }
-            var nextTexture = downloadedTextures[nextIndex];
-            FitPicture(nextTexture);
+            FitPicture(downloadedTextures[nextIndex]);
         }
 
         private void FitPicture(Texture2D tempTex)
@@ -186,11 +187,11 @@ namespace Nomlas.Poster
             FitPicture(result.Result);
             TMPMessage($"Now Loading... ({loadedPosterIndex + 1}/{posterLength}) Poster is not synced.", $"読み込み中... ({loadedPosterIndex + 1}/{posterLength}) ポスターは同期していません。");
             //posterLengthは枚数だがloadedPosterIndexはインデックスなので1少なくなる
-            if (posterLength - 1 > loadedPosterIndex && stringLoaded) //ImageLoadingがすべて完了していない & StringLoading終わってる
+            if ((posterLength - 1 > loadedPosterIndex) && stringLoaded) //ImageLoadingがすべて完了していない & StringLoading終わってる
             {
                 LoadPoster();
             }
-            if (posterLength - 1 == loadedPosterIndex && stringLoaded)
+            if ((posterLength - 1 == loadedPosterIndex) && stringLoaded)
             {
                 Dlog("全てのポスターのImageLoadingが完了しました。スライドショーを開始します");
                 SyncPosterIndex();
@@ -203,17 +204,17 @@ namespace Nomlas.Poster
             TMPMessage($"Failed to load poster.Error: {result.Error} Detail: {result.ErrorMessage}.", $"ポスターの読み込みに失敗しました。エラー内容: {result.Error} 詳細: {result.ErrorMessage}.");
         }
 
-        private int ST()
+        private int GetElapsedSeconds()
         {
             //2024年からの経過秒数を取得する関数
             DateTime now = Networking.GetNetworkDateTime();
             TimeSpan elapsedTime = now - startOfYear;
             int yearTime = (int)elapsedTime.TotalSeconds;
-            if (yearTime > 0) //タイムトラベラー用に一応対策
+            if (yearTime > 0)
             {
                 return yearTime;
             }
-            else
+            else //タイムトラベラー用に一応対策
             {
                 return 1;
             }

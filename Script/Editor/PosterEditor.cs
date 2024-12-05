@@ -30,19 +30,32 @@ namespace Nomlas.Poster
                 }
             }
             EditorGUILayout.Space();
+
             poster.slideTime = EditorGUILayout.IntField(JPENText(poster.JapaneseMode, "スライドショーのインターバル", "Interval"), poster.slideTime);
             if (poster.slideTime <= 0)
             {
                 EditorGUILayout.HelpBox("インターバルが0秒以下になっています！", MessageType.Error);
             }
             EditorGUILayout.Space();
+
             poster.startDelayTime = EditorGUILayout.IntField(JPENText(poster.JapaneseMode, "開始遅延", "Start delay time"), poster.startDelayTime);
             if (poster.startDelayTime < 0)
             {
                 EditorGUILayout.HelpBox("開始遅延が0秒未満になっています！", MessageType.Error);
             }
-
             EditorGUILayout.Space();
+
+            poster.aspectRaito = EditorGUILayout.FloatField(JPENText(poster.JapaneseMode, "アスペクト比", "Aspect Ratio"), poster.aspectRaito);
+            if (poster.aspectRaito < 0)
+            {
+                EditorGUILayout.HelpBox("アスペクト比が0未満になっています！", MessageType.Error);
+            }
+            if (GUILayout.Button(JPENText(poster.JapaneseMode, "リセット", "Reset")))
+            {
+                poster.aspectRaito = 0.7071f;
+            }
+            EditorGUILayout.Space();
+
             EditorGUILayout.Space();
             openDefault = EditorGUILayout.BeginFoldoutHeaderGroup(openDefault, JPENText(poster.JapaneseMode, "値", "Values"));
             EditorGUILayout.EndFoldoutHeaderGroup();
