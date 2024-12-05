@@ -1,0 +1,273 @@
+using UdonSharp;
+using UnityEngine;
+using TMPro;
+using VRC.SDK3.Image;
+using VRC.SDKBase;
+using VRC.Udon.Common.Interfaces;
+using VRC.SDK3.StringLoading;
+using VRC.SDK3.Data;
+using System;
+
+namespace Nomlas.Poster
+{
+    [HelpURL("https://docs.google.com/document/u/3/d/e/2PACX-1vQ2tJG6_q6qIp0ynnRzgrQ5-iQuFfUH3zWuzKouasIRNZFr_Nn-zaTWQV3qID1K1Q0OaaAQd2Rtug85/pub")]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    public class poster : UdonSharpBehaviour
+    {
+        private string vrc202310Poster_version = "1.1.2";
+
+        [Header("2023年10月VRC同期会ポスター v" + "1.1.2")]
+        [SerializeField] private bool JapaneseMode;
+
+        [Header("ポスター画像のURL")]
+        [SerializeField] private VRCUrl[] picUrls;
+
+
+        [Header("ポスター枚数のURL")]
+        [SerializeField] private VRCUrl lengthURL;
+
+        [Header("スライドショーのインターバル")]
+        [SerializeField] private int slideTime;
+
+        [Header("開始遅延")]
+        [SerializeField] private int startDelayTime;
+
+
+        [Header("ターゲット")]
+        [SerializeField] private GameObject picture;
+        [SerializeField] private TextMeshProUGUI message;
+
+        private Animator animator;
+        private Material material;
+
+        private int nextIndex = 0;
+        private int loadedPosterIndex = -1;
+        private VRCImageDownloader downloader;
+        private IUdonEventReceiver udonEventReceiver;
+        private Texture2D[] downloadedTextures;
+        private TextureInfo texInfo;
+        private int posterLength = 1; //1枚はある前提
+        private bool stringLoaded = false;
+        private string json;
+        DateTime startOfYear = new DateTime(2024, 1, 1, 0, 0, 0); // 2024/01/01 00:00:00
+
+        void Start()
+        {
+            // SerializeFieldのチェック
+            if (slideTime <= 0)
+            {
+                Dlog("slideTimeが0以下になっています。修正してください。", 2);
+            }
+            if (picture == null)
+            {
+                Dlog("ターゲットが正しくありません。修正してください。", 2);
+            }
+
+            if (JapaneseMode)
+            {
+                Dlog("日本語モードがオンになっています。TextMeshProのメッセージが日本語で表示されます。");
+            }
+            else
+            {
+                Dlog("Japanese Mode is OFF. TextMeshPro's messages are written in English, but logs are written in Japanese.");
+            }
+            TMPMessage("Now Loading... (0/?) Poster is not synced.", "読み込み中... (0/?) ポスターは同期していません。");
+            //初期設定
+            animator = GetComponent<Animator>();
+            downloadedTextures = new Texture2D[picUrls.Length];
+            downloader = new VRCImageDownloader();
+            udonEventReceiver = (IUdonEventReceiver)this;
+            texInfo = new TextureInfo();
+            texInfo.GenerateMipMaps = true;
+            texInfo.MaterialProperty = "_MainTex";
+            material = picture.GetComponent<MeshRenderer>().material;
+            if (startDelayTime > 0)
+            {
+                SendCustomEventDelayedSeconds(nameof(StartLoading), startDelayTime);
+            }
+            else
+            {
+                StartLoading();
+            }
+        }
+
+        public void StartLoading()
+        {
+            //StringLoading開始
+            Dlog($"StringLoading開始、ポスター枚数を取得中...");
+            VRCStringDownloader.LoadUrl(lengthURL, udonEventReceiver);
+
+            //同時にImageLoadingも開始
+            Dlog("1枚目のポスターの先行読み込みを開始します");
+            LoadFirstPoster();
+        }
+
+        public override void OnStringLoadSuccess(IVRCStringDownload result)
+        {
+            json = result.Result;
+            if (VRCJson.TryDeserializeFromJson(json, out DataToken res))
+            {
+                if (res.DataDictionary.TryGetValue("length", out DataToken value))
+                {
+                    posterLength = int.Parse(value.String);
+                    stringLoaded = true;
+                    Dlog($"StringLoading成功、ポスターは{posterLength}枚です");
+                    if (downloadedTextures[0] != null) //1枚目ImageLoadingより遅かった場合
+                    {
+                        Dlog("2枚目以降のポスターのImageLoadingを開始します");
+                        LoadPoster();
+                    }
+                }
+                else
+                {
+                    Dlog($"解析に失敗しました。 {value}");
+                    TMPMessage($"Parsing failed. Detail: {value}", $"解析に失敗しました。詳細：{value}");
+                }
+            }
+            else
+            {
+                Dlog($"デシリアライズに失敗しました。 {result}");
+                TMPMessage($"Deserialization failed. Detail: {result}", $"デシリアライズに失敗しました。詳細：{result}");
+            }
+        }
+        public override void OnStringLoadError(IVRCStringDownload result)
+        {
+            Dlog($"ポスター枚数を取得できませんでした。詳細：{result.Error}");
+            TMPMessage($"Failed to get data. Detail: {result.Error}", $"ポスター枚数を取得できませんでした。詳細：{result.Error}");
+        }
+
+        private void LoadFirstPoster()
+        {
+            downloader.DownloadImage(picUrls[0], material, udonEventReceiver, texInfo);
+        }
+
+        private void LoadPoster() //ここでポスターをImageLoading
+        {
+            Dlog($"{loadedPosterIndex + 2}枚目のポスターをダウンロードします");
+            downloader.DownloadImage(picUrls[loadedPosterIndex + 1], material, udonEventReceiver, texInfo);
+        }
+
+        private void SyncPosterIndex() //発火タイミングを調整する
+        {
+            nextIndex = ST() % (slideTime * posterLength) / slideTime - 1;
+            int offset = slideTime - (ST() % slideTime);
+            Dlog($"タイミング調整中。{offset}秒後にスライドショーを開始します");
+            TMPMessage("All posters have been loaded. Will synchronize shortly...", "全ポスター読み込み完了。まもなく同期します...");
+            SendCustomEventDelayedSeconds(nameof(StartLoadNextPoster), offset);
+        }
+
+        public void StartLoadNextPoster()
+        {
+            Dlog("スライドショーを開始します");
+            TMPMessage("", "");
+            LoadNextPoster();
+        }
+
+        public void LoadNextPoster() //ImageLoadingがすべて完了したとき開始
+        {
+            LoadNext();
+            SendCustomEventDelayedSeconds(nameof(LoadNextPoster), slideTime);
+        }
+
+        private void LoadNext() //スライドショー機能
+        {
+            ++nextIndex;
+            if (nextIndex > posterLength - 1)
+            {
+                nextIndex = 0;
+            }
+            var nextTexture = downloadedTextures[nextIndex];
+            FitPicture(nextTexture);
+        }
+
+        private void FitPicture(Texture2D tempTex)
+        {
+            var oldTex = material.GetTexture("_MainTex");
+            material.SetTexture("_SubTex", oldTex); //今表示中のポスターをSubTexにコピー
+            animator.Play("transition", 0, 0.0f); // SubTex => MainTexのアニメーションを再生
+            material.SetTexture("_MainTex", tempTex); //新しいポスターをMainTexに
+            material.SetFloat("_MainTexX", Mathf.Clamp(tempTex.height / (float)tempTex.width, 1, float.MaxValue));
+            material.SetFloat("_MainTexY", Mathf.Clamp(tempTex.width / (float)tempTex.height, 1, float.MaxValue));
+            material.SetFloat("_SubTexX", Mathf.Clamp(oldTex.height / (float)oldTex.width, 1, float.MaxValue));
+            material.SetFloat("_SubTexY", Mathf.Clamp(oldTex.width / (float)oldTex.height, 1, float.MaxValue));
+        }
+
+        public override void OnImageLoadSuccess(IVRCImageDownload result)
+        {
+            loadedPosterIndex++;
+            Dlog($"{loadedPosterIndex + 1}枚目のポスターのダウンロードに成功しました");
+            downloadedTextures[loadedPosterIndex] = result.Result;
+            FitPicture(result.Result);
+            TMPMessage($"Now Loading... ({loadedPosterIndex + 1}/{posterLength}) Poster is not synced.", $"読み込み中... ({loadedPosterIndex + 1}/{posterLength}) ポスターは同期していません。");
+            //posterLengthは枚数だがloadedPosterIndexはインデックスなので1少なくなる
+            if (posterLength - 1 > loadedPosterIndex && stringLoaded) //ImageLoadingがすべて完了していない & StringLoading終わってる
+            {
+                LoadPoster();
+            }
+            if (posterLength - 1 == loadedPosterIndex && stringLoaded)
+            {
+                Dlog("全てのポスターのImageLoadingが完了しました。スライドショーを開始します");
+                SyncPosterIndex();
+            }
+        }
+
+        public override void OnImageLoadError(IVRCImageDownload result) //カナシイネ
+        {
+            Dlog($"ポスターの読み込みに失敗しました。エラー内容: {result.Error} 詳細: {result.ErrorMessage}.");
+            TMPMessage($"Failed to load poster.Error: {result.Error} Detail: {result.ErrorMessage}.", $"ポスターの読み込みに失敗しました。エラー内容: {result.Error} 詳細: {result.ErrorMessage}.");
+        }
+
+        private int ST()
+        {
+            //2024年からの経過秒数を取得する関数
+            DateTime now = Networking.GetNetworkDateTime();
+            TimeSpan elapsedTime = now - startOfYear;
+            int yearTime = (int)elapsedTime.TotalSeconds;
+            if (yearTime > 0) //タイムトラベラー用に一応対策
+            {
+                return yearTime;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            downloader.Dispose();
+        }
+
+        private void TMPMessage(string _TextMeshProMessageEnglish, string _TextMeshProMessageJapanese)
+        {
+            if (message == null)
+            {
+                return;
+            }
+            if (JapaneseMode)
+            {
+                message.text = _TextMeshProMessageJapanese;
+            }
+            else
+            {
+                message.text = _TextMeshProMessageEnglish;
+            }
+        }
+
+        private void Dlog(string logText, int logMode = 0) //Debug.Logを少し楽にする用
+        {
+            switch (logMode)
+            {
+                case 1:
+                    Debug.LogWarning($"[<color=orange>2023年10月VRC同期会ポスター v{vrc202310Poster_version}</color>]{logText}");
+                    break;
+                case 2:
+                    Debug.LogError($"[<color=orange>2023年10月VRC同期会ポスター v{vrc202310Poster_version}</color>]{logText}");
+                    break;
+                default:
+                    Debug.Log($"[<color=orange>2023年10月VRC同期会ポスター v{vrc202310Poster_version}</color>]{logText}");
+                    break;
+            }
+        }
+    }
+}
