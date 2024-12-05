@@ -46,13 +46,18 @@ namespace Nomlas.Poster
             EditorGUILayout.Space();
 
             poster.aspectRaito = EditorGUILayout.FloatField(JPENText(poster.JapaneseMode, "アスペクト比", "Aspect Ratio"), poster.aspectRaito);
-            if (poster.aspectRaito < 0)
+            if (poster.aspectRaito <= 0)
             {
-                EditorGUILayout.HelpBox("アスペクト比が0未満になっています！", MessageType.Error);
+                EditorGUILayout.HelpBox("アスペクト比が0以下になっています！", MessageType.Error);
             }
             if (GUILayout.Button(JPENText(poster.JapaneseMode, "リセット", "Reset")))
             {
                 poster.aspectRaito = 0.7071f;
+            }
+            if (poster.picture != null)
+            {
+                Material material = poster.picture.GetComponent<MeshRenderer>().sharedMaterial;
+                material.SetFloat("_Aspect", poster.aspectRaito);
             }
             EditorGUILayout.Space();
 

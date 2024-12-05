@@ -105,6 +105,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Aspect: 0.7071
     - _BumpScale: 1
     - _CameraSize: 100
     - _ColorMask: 15
@@ -117,7 +118,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _MainTexAspect: 0.001
+    - _MainTexAspect: 1
     - _MainTexRatio: 1
     - _MainTexX: 1.414
     - _MainTexY: 1
@@ -140,7 +141,7 @@ Material:
     - _StencilOp: 0
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
-    - _SubTexAspect: 0.705
+    - _SubTexAspect: 1
     - _SubTexX: 1.414
     - _SubTexY: 1
     - _SubTexZoomX: 1

@@ -66,8 +66,8 @@ namespace Nomlas.Poster
             udonEventReceiver = (IUdonEventReceiver)this;
             texInfo = new TextureInfo();
             texInfo.GenerateMipMaps = true;
-            texInfo.MaterialProperty = "_MainTex";
-            material = picture.GetComponent<MeshRenderer>().material;
+            texInfo.MaterialProperty = "_SubTex";
+            material = picture.GetComponent<MeshRenderer>().sharedMaterial;
             if (startDelayTime > 0)
             {
                 SendCustomEventDelayedSeconds(nameof(StartLoading), startDelayTime);
@@ -173,10 +173,8 @@ namespace Nomlas.Poster
             material.SetTexture("_SubTex", oldTex); //今表示中のポスターをSubTexにコピー
             animator.Play("transition", 0, 0.0f); // SubTex => MainTexのアニメーションを再生
             material.SetTexture("_MainTex", tempTex); //新しいポスターをMainTexに
-            material.SetFloat("_MainTexX", Mathf.Clamp(tempTex.height / (float)tempTex.width, 1, float.MaxValue));
-            material.SetFloat("_MainTexY", Mathf.Clamp(tempTex.width / (float)tempTex.height, 1, float.MaxValue));
-            material.SetFloat("_SubTexX", Mathf.Clamp(oldTex.height / (float)oldTex.width, 1, float.MaxValue));
-            material.SetFloat("_SubTexY", Mathf.Clamp(oldTex.width / (float)oldTex.height, 1, float.MaxValue));
+            material.SetFloat("_MainTexAspect", Mathf.Clamp(tempTex.width / (float)tempTex.height, float.Epsilon, float.MaxValue) / aspectRaito);
+            material.SetFloat("_SubTexAspect", Mathf.Clamp(oldTex.width / (float)oldTex.height, float.Epsilon, float.MaxValue) / aspectRaito);
         }
 
         public override void OnImageLoadSuccess(IVRCImageDownload result)
