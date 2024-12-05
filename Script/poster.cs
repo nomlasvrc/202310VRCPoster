@@ -10,34 +10,21 @@ using System;
 
 namespace Nomlas.Poster
 {
-    [HelpURL("https://docs.google.com/document/u/3/d/e/2PACX-1vQ2tJG6_q6qIp0ynnRzgrQ5-iQuFfUH3zWuzKouasIRNZFr_Nn-zaTWQV3qID1K1Q0OaaAQd2Rtug85/pub")]
+    [HelpURL("https://github.com/nomlasvrc/202310VRCPoster")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public class poster : UdonSharpBehaviour
+    public class Poster : UdonSharpBehaviour
     {
-        private string vrc202310Poster_version = "1.1.2";
-
-        [Header("2023年10月VRC同期会ポスター v" + "1.1.2")]
-        [SerializeField] private bool JapaneseMode;
-
-        [Header("ポスター画像のURL")]
+        public readonly string version = "v1.1.2";
+        [SerializeField] public bool JapaneseMode;
         [SerializeField] private VRCUrl[] picUrls;
-
-
-        [Header("ポスター枚数のURL")]
         [SerializeField] private VRCUrl lengthURL;
+        [SerializeField] public int slideTime;
+        [SerializeField] public int startDelayTime;
 
-        [Header("スライドショーのインターバル")]
-        [SerializeField] private int slideTime;
+        [SerializeField] public GameObject picture;
+        [SerializeField] public TextMeshProUGUI message;
 
-        [Header("開始遅延")]
-        [SerializeField] private int startDelayTime;
-
-
-        [Header("ターゲット")]
-        [SerializeField] private GameObject picture;
-        [SerializeField] private TextMeshProUGUI message;
-
-        private Animator animator;
+        [SerializeField] public Animator animator;
         private Material material;
 
         private int nextIndex = 0;
@@ -49,18 +36,18 @@ namespace Nomlas.Poster
         private int posterLength = 1; //1枚はある前提
         private bool stringLoaded = false;
         private string json;
-        DateTime startOfYear = new DateTime(2024, 1, 1, 0, 0, 0); // 2024/01/01 00:00:00
+        readonly DateTime startOfYear = new DateTime(2024, 1, 1, 0, 0, 0); // 2024/01/01 00:00:00
 
         void Start()
         {
             // SerializeFieldのチェック
             if (slideTime <= 0)
             {
-                Dlog("slideTimeが0以下になっています。修正してください。", 2);
+                Dlog("slideTimeが0以下になっています。修正してください。", LogType.Error);
             }
             if (picture == null)
             {
-                Dlog("ターゲットが正しくありません。修正してください。", 2);
+                Dlog("ターゲットが正しくありません。修正してください。", LogType.Error);
             }
 
             if (JapaneseMode)
@@ -73,7 +60,6 @@ namespace Nomlas.Poster
             }
             TMPMessage("Now Loading... (0/?) Poster is not synced.", "読み込み中... (0/?) ポスターは同期していません。");
             //初期設定
-            animator = GetComponent<Animator>();
             downloadedTextures = new Texture2D[picUrls.Length];
             downloader = new VRCImageDownloader();
             udonEventReceiver = (IUdonEventReceiver)this;
@@ -120,19 +106,19 @@ namespace Nomlas.Poster
                 }
                 else
                 {
-                    Dlog($"解析に失敗しました。 {value}");
+                    Dlog($"解析に失敗しました。 {value}", LogType.Warning);
                     TMPMessage($"Parsing failed. Detail: {value}", $"解析に失敗しました。詳細：{value}");
                 }
             }
             else
             {
-                Dlog($"デシリアライズに失敗しました。 {result}");
+                Dlog($"デシリアライズに失敗しました。 {result}", LogType.Warning);
                 TMPMessage($"Deserialization failed. Detail: {result}", $"デシリアライズに失敗しました。詳細：{result}");
             }
         }
         public override void OnStringLoadError(IVRCStringDownload result)
         {
-            Dlog($"ポスター枚数を取得できませんでした。詳細：{result.Error}");
+            Dlog($"ポスター枚数を取得できませんでした。詳細：{result.Error}", LogType.Warning);
             TMPMessage($"Failed to get data. Detail: {result.Error}", $"ポスター枚数を取得できませんでした。詳細：{result.Error}");
         }
 
@@ -152,7 +138,7 @@ namespace Nomlas.Poster
             nextIndex = ST() % (slideTime * posterLength) / slideTime - 1;
             int offset = slideTime - (ST() % slideTime);
             Dlog($"タイミング調整中。{offset}秒後にスライドショーを開始します");
-            TMPMessage("All posters have been loaded. Will synchronize shortly...", "全ポスター読み込み完了。まもなく同期します...");
+            TMPMessage("All posters have been loaded. Adjusting timing...", "全ポスター読み込み完了。まもなく同期します...");
             SendCustomEventDelayedSeconds(nameof(StartLoadNextPoster), offset);
         }
 
@@ -213,7 +199,7 @@ namespace Nomlas.Poster
 
         public override void OnImageLoadError(IVRCImageDownload result) //カナシイネ
         {
-            Dlog($"ポスターの読み込みに失敗しました。エラー内容: {result.Error} 詳細: {result.ErrorMessage}.");
+            Dlog($"ポスターの読み込みに失敗しました。エラー内容: {result.Error} 詳細: {result.ErrorMessage}.", LogType.Warning);
             TMPMessage($"Failed to load poster.Error: {result.Error} Detail: {result.ErrorMessage}.", $"ポスターの読み込みに失敗しました。エラー内容: {result.Error} 詳細: {result.ErrorMessage}.");
         }
 
@@ -254,18 +240,22 @@ namespace Nomlas.Poster
             }
         }
 
-        private void Dlog(string logText, int logMode = 0) //Debug.Logを少し楽にする用
+        private void Dlog(string logText, LogType logType = LogType.Log) //Debug.Logを少し楽にする用
         {
-            switch (logMode)
+            string log = $"[<color=orange>2023年10月VRC同期会ポスター {version}</color>]{logText}";
+            switch (logType)
             {
-                case 1:
-                    Debug.LogWarning($"[<color=orange>2023年10月VRC同期会ポスター v{vrc202310Poster_version}</color>]{logText}");
+                case LogType.Warning:
+                    Debug.LogWarning(log);
                     break;
-                case 2:
-                    Debug.LogError($"[<color=orange>2023年10月VRC同期会ポスター v{vrc202310Poster_version}</color>]{logText}");
+                case LogType.Error:
+                    Debug.LogError(log);
                     break;
+                case LogType.Log:
+                    Debug.Log(log);
+                    break; 
                 default:
-                    Debug.Log($"[<color=orange>2023年10月VRC同期会ポスター v{vrc202310Poster_version}</color>]{logText}");
+                    Debug.Log(log);
                     break;
             }
         }

@@ -1,0 +1,62 @@
+
+using UnityEditor;
+using UnityEngine;
+using VRC.SDKBase;
+
+namespace Nomlas.Poster
+{
+    [CustomEditor(typeof(Poster))]
+    public class PosterEditor : Editor
+    {
+        bool openDefault;
+        public override void OnInspectorGUI()
+        {
+            Poster poster = target as Poster;
+
+            EditorGUILayout.LabelField("2023年10月VRC同期会ポスター " + poster.version, EditorStyles.boldLabel);
+            EditorGUILayout.Space();
+            if (poster.JapaneseMode)
+            {
+                if (GUILayout.Button("Switch to English"))
+                {
+                    poster.JapaneseMode = false;
+                }
+            }
+            else
+            {
+                if (GUILayout.Button("日本語に切り替え"))
+                {
+                    poster.JapaneseMode = true;
+                }
+            }
+            EditorGUILayout.Space();
+            poster.slideTime = EditorGUILayout.IntField(JPENText(poster.JapaneseMode, "スライドショーのインターバル", "Interval"), poster.slideTime);
+            if (poster.slideTime <= 0)
+            {
+                EditorGUILayout.HelpBox("インターバルが0秒以下になっています！", MessageType.Error);
+            }
+            EditorGUILayout.Space();
+            poster.startDelayTime = EditorGUILayout.IntField(JPENText(poster.JapaneseMode, "開始遅延", "Start delay time"), poster.startDelayTime);
+            if (poster.startDelayTime < 0)
+            {
+                EditorGUILayout.HelpBox("開始遅延が0秒未満になっています！", MessageType.Error);
+            }
+
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            openDefault = EditorGUILayout.BeginFoldoutHeaderGroup(openDefault, JPENText(poster.JapaneseMode, "値", "Values"));
+            EditorGUILayout.EndFoldoutHeaderGroup();
+            if (openDefault)
+            {
+                EditorGUI.indentLevel++;
+                DrawDefaultInspector();
+                EditorGUI.indentLevel--;
+            }
+        }
+
+        private string JPENText(bool japaneseMode, string japaneseText, string englishText)
+        {
+            return japaneseMode ? japaneseText : englishText;
+        }
+    }
+}
