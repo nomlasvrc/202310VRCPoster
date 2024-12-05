@@ -1,5 +1,7 @@
 # 2023年10月VRC同期会ポスター
 
+## [こちら](https://nomlasvrc.github.io/202310VRCPoster/)からVCC追加できます
+
 ## パラメータについて
 
 **Japanese Mode** 日本語モードです。オフにすると英語で表示されます。オンにした場合はフォントを変更してください。When turned off, messages will be displayed in English.
