@@ -14,7 +14,7 @@ namespace Nomlas.Poster
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class Poster : UdonSharpBehaviour
     {
-        [NonSerialized] public readonly string version = "v1.2.1";
+        [NonSerialized] public readonly string version = "v1.2.2";
         [SerializeField] public bool JapaneseMode;
         [SerializeField] private VRCUrl[] picUrls;
         [SerializeField] private VRCUrl lengthURL;
