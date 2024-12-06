@@ -46,7 +46,7 @@ namespace Nomlas.Poster
             {
                 Dlog("slideTimeが0以下になっています。修正してください。", LogType.Error);
             }
-            if (picture == null)
+            if (picture == null || animator == null)
             {
                 Dlog("ターゲットが正しくありません。修正してください。", LogType.Error);
             }
