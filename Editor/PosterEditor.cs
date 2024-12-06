@@ -75,13 +75,6 @@ namespace Nomlas.Poster
             {
                 EditorGUILayout.HelpBox("アニメータが設定されていません！", MessageType.Error);
             }
-            else
-            {
-                if (!HasParameter(poster.animator, "transition"))
-                {
-                    EditorGUILayout.HelpBox("アニメータに「transition」パラメータがありません！", MessageType.Error);
-                }
-            }
 
             EditorGUILayout.Space();
             openDefault = EditorGUILayout.BeginFoldoutHeaderGroup(openDefault, JPENText(poster.JapaneseMode, "値", "Values"));
@@ -97,18 +90,6 @@ namespace Nomlas.Poster
         private string JPENText(bool japaneseMode, string japaneseText, string englishText)
         {
             return japaneseMode ? japaneseText : englishText;
-        }
-        
-        private bool HasParameter(Animator animator, string parameterName)
-        {
-            foreach (AnimatorControllerParameter param in animator.parameters)
-            {
-                if (param.name == parameterName)
-                {
-                    return true;
-                }
-            }
-            return false;
         }
     }
 }
