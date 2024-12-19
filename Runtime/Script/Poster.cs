@@ -7,25 +7,34 @@ using VRC.Udon.Common.Interfaces;
 using VRC.SDK3.StringLoading;
 using VRC.SDK3.Data;
 using System;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("com.nomlas.202310poster.Editor")]
 namespace Nomlas.Poster
 {
+    public enum Language
+    {
+        日本語,
+        English
+    }
+
+
     [HelpURL("https://github.com/nomlasvrc/202310VRCPoster")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class Poster : UdonSharpBehaviour
     {
-        [NonSerialized] public readonly string version = "v1.2.2";
-        [SerializeField] public bool JapaneseMode;
+        [NonSerialized] internal readonly string version = "v1.2.2";
+        [SerializeField] internal Language language;
         [SerializeField] private VRCUrl[] picUrls;
         [SerializeField] private VRCUrl lengthURL;
-        [SerializeField] public int slideTime;
-        [SerializeField] public int startDelayTime;
-        [SerializeField] public float aspectRaito;
+        [SerializeField] internal int slideTime;
+        [SerializeField] internal int startDelayTime;
+        [SerializeField] internal float aspectRaito;
 
-        [SerializeField] public GameObject picture;
-        [SerializeField] public TextMeshProUGUI message;
+        [SerializeField] internal GameObject picture;
+        [SerializeField] internal TextMeshProUGUI message;
 
-        [SerializeField] public Animator animator;
+        [SerializeField] internal Animator animator;
         private Material material;
 
         private int nextIndex = 0;
@@ -51,7 +60,7 @@ namespace Nomlas.Poster
                 Dlog("ターゲットが正しくありません。修正してください。", LogType.Error);
             }
 
-            if (JapaneseMode)
+            if (language == Language.日本語)
             {
                 Dlog("日本語モードがオンになっています。TextMeshProのメッセージが日本語で表示されます。");
             }
@@ -229,7 +238,7 @@ namespace Nomlas.Poster
             {
                 return;
             }
-            if (JapaneseMode)
+            if (language == Language.日本語)
             {
                 message.text = _TextMeshProMessageJapanese;
             }

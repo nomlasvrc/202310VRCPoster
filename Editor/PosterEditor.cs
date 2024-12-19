@@ -13,43 +13,29 @@ namespace Nomlas.Poster
             Poster poster = target as Poster;
 
             EditorGUILayout.LabelField("2023年10月VRC同期会ポスター " + poster.version, EditorStyles.boldLabel);
-            EditorGUILayout.Space();
-            if (poster.JapaneseMode)
-            {
-                if (GUILayout.Button("Switch to English"))
-                {
-                    poster.JapaneseMode = false;
-                }
-            }
-            else
-            {
-                if (GUILayout.Button("日本語に切り替え"))
-                {
-                    poster.JapaneseMode = true;
-                }
-            }
+            poster.language = (Language)EditorGUILayout.EnumPopup(JPENText(poster.language, "言語", "Language"), poster.language);
             EditorGUILayout.Space();
 
-            poster.slideTime = EditorGUILayout.IntField(JPENText(poster.JapaneseMode, "スライドショーのインターバル", "Interval"), poster.slideTime);
+            poster.slideTime = EditorGUILayout.IntField(JPENText(poster.language, "スライドショーのインターバル", "Interval"), poster.slideTime);
             if (poster.slideTime <= 0)
             {
                 EditorGUILayout.HelpBox("インターバルが0秒以下になっています！", MessageType.Error);
             }
             EditorGUILayout.Space();
 
-            poster.startDelayTime = EditorGUILayout.IntField(JPENText(poster.JapaneseMode, "開始遅延", "Start delay time"), poster.startDelayTime);
+            poster.startDelayTime = EditorGUILayout.IntField(JPENText(poster.language, "開始遅延", "Start delay time"), poster.startDelayTime);
             if (poster.startDelayTime < 0)
             {
                 EditorGUILayout.HelpBox("開始遅延が0秒未満になっています！", MessageType.Error);
             }
             EditorGUILayout.Space();
 
-            poster.aspectRaito = EditorGUILayout.FloatField(JPENText(poster.JapaneseMode, "アスペクト比", "Aspect Ratio"), poster.aspectRaito);
+            poster.aspectRaito = EditorGUILayout.FloatField(JPENText(poster.language, "アスペクト比", "Aspect Ratio"), poster.aspectRaito);
             if (poster.aspectRaito <= 0)
             {
                 EditorGUILayout.HelpBox("アスペクト比が0以下になっています！", MessageType.Error);
             }
-            if (GUILayout.Button(JPENText(poster.JapaneseMode, "アスペクト比をリセット", "Reset")))
+            if (GUILayout.Button(JPENText(poster.language, "アスペクト比をリセット", "Reset")))
             {
                 poster.aspectRaito = 0.7071f;
             }
@@ -77,7 +63,7 @@ namespace Nomlas.Poster
             }
 
             EditorGUILayout.Space();
-            openDefault = EditorGUILayout.BeginFoldoutHeaderGroup(openDefault, JPENText(poster.JapaneseMode, "値", "Values"));
+            openDefault = EditorGUILayout.BeginFoldoutHeaderGroup(openDefault, JPENText(poster.language, "値", "Values"));
             EditorGUILayout.EndFoldoutHeaderGroup();
             if (openDefault)
             {
@@ -87,9 +73,9 @@ namespace Nomlas.Poster
             }
         }
 
-        private string JPENText(bool japaneseMode, string japaneseText, string englishText)
+        private string JPENText(Language japaneseMode, string japaneseText, string englishText)
         {
-            return japaneseMode ? japaneseText : englishText;
+            return japaneseMode == Language.日本語 ? japaneseText : englishText;
         }
     }
 }
