@@ -66,7 +66,7 @@ namespace Nomlas.Poster
             }
             else
             {
-                Dlog("Japanese Mode is OFF. TextMeshPro's messages are written in English, but logs are written in Japanese.");
+                Dlog("Japanese Mode is OFF. TextMeshPro's messages are written in English.");
             }
             TMPMessage("Now Loading... (0/?) Poster is not synced.", "読み込み中... (0/?) ポスターは同期していません。");
             //初期設定
