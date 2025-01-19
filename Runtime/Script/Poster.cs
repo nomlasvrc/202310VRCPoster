@@ -182,8 +182,8 @@ namespace Nomlas.Poster
             material.SetTexture("_SubTex", oldTex); //今表示中のポスターをSubTexにコピー
             animator.Play("transition", 0, 0.0f); // SubTex => MainTexのアニメーションを再生
             material.SetTexture("_MainTex", tempTex); //新しいポスターをMainTexに
-            material.SetFloat("_MainTexAspect", Mathf.Clamp(tempTex.width / (float)tempTex.height, float.Epsilon, float.MaxValue) / aspectRaito);
-            material.SetFloat("_SubTexAspect", Mathf.Clamp(oldTex.width / (float)oldTex.height, float.Epsilon, float.MaxValue) / aspectRaito);
+            if (Utilities.IsValid(tempTex)) material.SetFloat("_MainTexAspect", Mathf.Clamp(tempTex.width / (float)tempTex.height, float.Epsilon, float.MaxValue) / aspectRaito);
+            if (Utilities.IsValid(oldTex)) material.SetFloat("_SubTexAspect", Mathf.Clamp(oldTex.width / (float)oldTex.height, float.Epsilon, float.MaxValue) / aspectRaito);
         }
 
         public override void OnImageLoadSuccess(IVRCImageDownload result)
