@@ -76,7 +76,7 @@ namespace Nomlas.Poster
             texInfo = new TextureInfo();
             texInfo.GenerateMipMaps = true;
             texInfo.MaterialProperty = "_SubTex";
-            material = picture.GetComponent<MeshRenderer>().sharedMaterial;
+            material = picture.GetComponent<MeshRenderer>().material;
             if (startDelayTime > 0)
             {
                 SendCustomEventDelayedSeconds(nameof(StartLoading), startDelayTime);
