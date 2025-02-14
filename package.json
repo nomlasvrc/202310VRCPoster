@@ -3,8 +3,9 @@
   "displayName": "2023年10月VRC同期会ポスター",
   "version": "1.2.3",
   "description": "2023年10月VRC同期会ポスター",
+  "gitDependencies": {},
   "vpmDependencies": {
-    "com.vrchat.worlds": "^3.5.0"
+    "com.vrchat.worlds": ">=3.5.0"
   },
   "author": {
     "name": "nomlas"
