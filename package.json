@@ -10,5 +10,6 @@
   "legacyFolders": {},
   "legacyFiles": {},
   "localPath": "",
-  "unity": "2019.4"
+  "unity": "2019.4",
+  "type": "UdonSharpSript"
 }
