@@ -14,13 +14,5 @@
     "bannerUrl":"banner.png",
     "githubRepos":[
         "nomlasvrc/202310VRCPoster"
-    ],
-    "packages":[
-        {
-            "name":"com.nomlas.202310poster",
-            "releases":[
-                "https://github.com/nomlasvrc/202310VRCPoster/releases/download/1.2.0/com.nomlas.202310poster-1.2.0.zip"
-            ]
-        }
     ]
 }
