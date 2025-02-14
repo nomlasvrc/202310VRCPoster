@@ -1,15 +1,13 @@
 {
   "name": "com.nomlas.202310poster",
-  "displayName": "2023\u5e7410\u6708VRC\u540c\u671f\u4f1a\u30dd\u30b9\u30bf\u30fc",
+  "displayName": "2023年10月VRC同期会ポスター",
   "version": "1.2.3",
-  "description": "2023\u5e7410\u6708VRC\u540c\u671f\u4f1a\u30dd\u30b9\u30bf\u30fc",
-  "gitDependencies": {},
+  "description": "2023年10月VRC同期会ポスター",
+  "vpmDependencies": {
+    "com.vrchat.worlds": "^3.5.0"
+  },
   "author": {
     "name": "nomlas"
   },
-  "legacyFolders": {},
-  "legacyFiles": {},
-  "localPath": "",
-  "unity": "2019.4",
-  "type": "UdonSharpSript"
+  "unity": "2019.4"
 }
