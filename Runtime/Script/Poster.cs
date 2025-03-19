@@ -207,8 +207,10 @@ namespace Nomlas.Poster
 
         public override void OnImageLoadError(IVRCImageDownload result) //カナシイネ
         {
-            Dlog($"ポスターの読み込みに失敗しました。エラー内容: {result.Error} 詳細: {result.ErrorMessage}.", LogType.Warning);
-            TMPMessage($"Failed to load poster.Error: {result.Error} Detail: {result.ErrorMessage}.", $"ポスターの読み込みに失敗しました。エラー内容: {result.Error} 詳細: {result.ErrorMessage}.");
+            string error = ErrorType(result.Error);
+            string imageErrorMessage = ImageErrorMessage(result.ErrorMessage);
+            Dlog($"ポスターの読み込みに失敗しました。{error}: {imageErrorMessage}", LogType.Warning);
+            TMPMessage($"Failed to load poster.{result.Error}: {result.ErrorMessage}", $"ポスターの読み込みに失敗しました。{error}: {imageErrorMessage}.");
         }
 
         private int GetElapsedSeconds()
@@ -248,6 +250,30 @@ namespace Nomlas.Poster
             }
         }
 
+        private string ErrorType(VRCImageDownloadError imageDownloadError)
+        {
+            switch (imageDownloadError)
+            {
+                case VRCImageDownloadError.InvalidURL:
+                    return "不正なURL";
+                case VRCImageDownloadError.AccessDenied:
+                    return "アクセス拒否";
+                case VRCImageDownloadError.InvalidImage:
+                    return "無効な画像";
+                case VRCImageDownloadError.DownloadError:
+                    return "ダウンロードエラー";
+                case VRCImageDownloadError.Unknown:
+                    return "不明なエラー";
+                default:
+                    return "不明なエラー";
+            }
+        }
+
+        private string ImageErrorMessage(string message)
+        {
+            return message.Replace("Failed to load file: MaximumDimensionExceeded", "最大画像サイズ超過").Replace("Invalid URL", "不正なURL");
+        }
+
         private void Dlog(string logText, LogType logType = LogType.Log) //Debug.Logを少し楽にする用
         {
             string log = $"[<color=orange>2023年10月VRC同期会ポスター {version}</color>]{logText}";
@@ -261,7 +287,7 @@ namespace Nomlas.Poster
                     break;
                 case LogType.Log:
                     Debug.Log(log);
-                    break; 
+                    break;
                 default:
                     Debug.Log(log);
                     break;

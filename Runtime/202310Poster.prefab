@@ -28,7 +28,7 @@ RectTransform:
   m_GameObject: {fileID: 2154550140061187442}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.001, y: 0.001, z: 0.001}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3177351240125513414}
@@ -37,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: -0.5}
-  m_SizeDelta: {x: 0.7071, y: 0.1}
+  m_SizeDelta: {x: 707, y: 100}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!223 &6320668069090789239
 Canvas:
@@ -194,12 +194,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.028
-  m_fontSizeBase: 0.028
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 0.02
-  m_fontSizeMax: 0.028
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 20
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -210,7 +210,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 3
   m_linkedTextComponent: {fileID: 0}
@@ -294,7 +294,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 6598101565587986979}
-  JapaneseMode: 1
+  language: 0
   picUrls:
   - url: https://dl.dropboxusercontent.com/scl/fi/aj6jg29u85qb4jj35uhl8/1.png?rlkey=ihps3okzn5l8heunbq1l1sgl9&dl=1
   - url: https://dl.dropboxusercontent.com/scl/fi/oaa9v10cwlhts6vdmcmy7/2.png?rlkey=iqkpkxt1a8p2pr9tk5ahctgr1&dl=1
