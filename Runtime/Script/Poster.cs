@@ -46,9 +46,9 @@ namespace Nomlas.Poster
         private int posterLength = 1; //1枚はある前提
         private bool stringLoaded = false;
         private string json;
-        readonly DateTime startOfYear = new DateTime(2024, 1, 1, 0, 0, 0); // 2024/01/01 00:00:00
+        private readonly DateTime startOfYear = new DateTime(2024, 1, 1, 0, 0, 0); // 2024/01/01 00:00:00
 
-        void Start()
+        private void Start()
         {
             // SerializeFieldのチェック
             if (slideTime <= 0)

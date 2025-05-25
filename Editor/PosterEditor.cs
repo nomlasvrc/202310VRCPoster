@@ -7,7 +7,7 @@ namespace Nomlas.Poster
     [CustomEditor(typeof(Poster))]
     public class PosterEditor : Editor
     {
-        bool openDefault;
+        private bool openDefault;
         public override void OnInspectorGUI()
         {
             Poster poster = target as Poster;
