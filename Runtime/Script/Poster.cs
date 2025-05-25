@@ -45,7 +45,6 @@ namespace Nomlas.Poster
         private int posterLength = 1; //1枚はある前提
         private bool stringLoaded = false;
         private string json;
-        private readonly DateTime startOfYear = new DateTime(2024, 1, 1, 0, 0, 0); // 2024/01/01 00:00:00
 
         private void Start()
         {
@@ -212,9 +211,12 @@ namespace Nomlas.Poster
             TMPMessage($"Failed to load poster.{result.Error}: {result.ErrorMessage}", $"ポスターの読み込みに失敗しました。{error}: {imageErrorMessage}.");
         }
 
-        private int GetElapsedSeconds()
+        /// <summary>
+        /// 2025年からの経過秒数を取得します。
+        /// </summary>
+        private static int GetElapsedSeconds()
         {
-            //2024年からの経過秒数を取得する関数
+            DateTime startOfYear = new DateTime(2025, 1, 1, 0, 0, 0); // 2025/01/01 00:00:00
             DateTime now = Networking.GetNetworkDateTime();
             TimeSpan elapsedTime = now - startOfYear;
             int yearTime = (int)elapsedTime.TotalSeconds;
@@ -249,7 +251,7 @@ namespace Nomlas.Poster
             }
         }
 
-        private string ErrorType(VRCImageDownloadError imageDownloadError)
+        private static string ErrorType(VRCImageDownloadError imageDownloadError)
         {
             switch (imageDownloadError)
             {
@@ -268,12 +270,12 @@ namespace Nomlas.Poster
             }
         }
 
-        private string ImageErrorMessage(string message)
+        private static string ImageErrorMessage(string message)
         {
             return message.Replace("Failed to load file: MaximumDimensionExceeded", "最大画像サイズ超過").Replace("Invalid URL", "不正なURL");
         }
 
-        private void Dlog(string logText, LogType logType = LogType.Log) //Debug.Logを少し楽にする用
+        private static void Dlog(string logText, LogType logType = LogType.Log) //Debug.Logを少し楽にする用
         {
             string log = $"[<color=orange>2023年10月VRC同期会ポスター {PosterVersion.GetVersion()}</color>]{logText}";
             switch (logType)
