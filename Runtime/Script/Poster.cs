@@ -141,21 +141,15 @@ namespace Nomlas.Poster
             downloader.DownloadImage(picUrls[loadedPosterIndex + 1], material, udonEventReceiver, texInfo);
         }
 
-        private void SyncPosterIndex() //発火タイミングを調整する
+        private void SyncPosterIndex()
         {
             int elapsedSeconds = GetElapsedSeconds();
             nextIndex = elapsedSeconds % (slideTime * posterLength) / slideTime - 1;
             int offset = slideTime - (elapsedSeconds % slideTime);
-            Dlog($"タイミング調整中。{offset}秒後にスライドショーを開始します");
-            TMPMessage("All posters have been loaded. Adjusting timing...", "全ポスター読み込み完了。まもなく同期します...");
-            SendCustomEventDelayedSeconds(nameof(StartLoadNextPoster), offset);
-        }
-
-        public void StartLoadNextPoster()
-        {
-            Dlog("スライドショーを開始します");
+            FitPicture(downloadedTextures[nextIndex]);
+            Dlog($"タイミング調整中: {offset}s");
             TMPMessage("", "");
-            LoadNextPoster();
+            SendCustomEventDelayedSeconds(nameof(LoadNextPoster), offset);
         }
 
         public void LoadNextPoster() //ImageLoadingがすべて完了したとき開始
