@@ -1,4 +1,3 @@
-
 using UnityEditor;
 using UnityEngine;
 
@@ -11,6 +10,8 @@ namespace Nomlas.Poster
         public override void OnInspectorGUI()
         {
             Poster poster = target as Poster;
+
+            EditorGUI.BeginChangeCheck();
 
             EditorGUILayout.LabelField("2023年10月VRC同期会ポスター " + poster.version, EditorStyles.boldLabel);
             poster.language = (Language)EditorGUILayout.EnumPopup(JPENText(poster.language, "言語", "Language"), poster.language);
@@ -70,6 +71,12 @@ namespace Nomlas.Poster
                 EditorGUI.indentLevel++;
                 DrawDefaultInspector();
                 EditorGUI.indentLevel--;
+            }
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(poster, "Poster Value Change");
+                EditorUtility.SetDirty(poster);
             }
         }
 
