@@ -13,7 +13,7 @@ namespace Nomlas.Poster
 
             EditorGUI.BeginChangeCheck();
 
-            EditorGUILayout.LabelField("2023年10月VRC同期会ポスター " + poster.version, EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("2023年10月VRC同期会ポスター " + PosterVersion.GetVersion(), EditorStyles.boldLabel);
             poster.language = (Language)EditorGUILayout.EnumPopup(JPENText(poster.language, "言語", "Language"), poster.language);
             EditorGUILayout.Space();
 

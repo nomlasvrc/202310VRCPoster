@@ -23,7 +23,6 @@ namespace Nomlas.Poster
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class Poster : UdonSharpBehaviour
     {
-        [NonSerialized] internal readonly string version = "v1.2.5";
         [SerializeField] internal Language language;
         [SerializeField] private VRCUrl[] picUrls;
         [SerializeField] private VRCUrl lengthURL;
@@ -276,7 +275,7 @@ namespace Nomlas.Poster
 
         private void Dlog(string logText, LogType logType = LogType.Log) //Debug.Logを少し楽にする用
         {
-            string log = $"[<color=orange>2023年10月VRC同期会ポスター {version}</color>]{logText}";
+            string log = $"[<color=orange>2023年10月VRC同期会ポスター {PosterVersion.GetVersion()}</color>]{logText}";
             switch (logType)
             {
                 case LogType.Warning:
