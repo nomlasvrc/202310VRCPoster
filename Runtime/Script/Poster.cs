@@ -144,7 +144,7 @@ namespace Nomlas.Poster
         private void SyncPosterIndex()
         {
             int elapsedSeconds = GetElapsedSeconds();
-            nextIndex = elapsedSeconds % (slideTime * posterLength) / slideTime - 1;
+            nextIndex = elapsedSeconds % (slideTime * posterLength) / slideTime;
             int offset = slideTime - (elapsedSeconds % slideTime);
             FitPicture(downloadedTextures[nextIndex]);
             Dlog($"タイミング調整中: {offset}s");
