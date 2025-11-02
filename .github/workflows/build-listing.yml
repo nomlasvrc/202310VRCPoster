@@ -5,6 +5,9 @@ env:
   pathToCi: ci
   
 on: 
+  push:
+    branches:
+      - page
   workflow_dispatch:
   release:
     types: [published, deleted]
@@ -34,6 +37,9 @@ jobs:
       # Checkout Local Repository
       - name: Checkout Local Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: page
 
       # Checkout Automation Repository without removing prior checkouts
       - name: Checkout Automation Repository
