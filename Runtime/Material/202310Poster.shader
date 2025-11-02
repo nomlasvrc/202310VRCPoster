@@ -5,7 +5,7 @@ Shader "Nomlas/202310Poster"
         [NoScaleOffset] _MainTex ("MainTexture", 2D) = "white" {}
         [NoScaleOffset] _SubTex ("SubTexture", 2D) = "white" {}
         _Transition("Transition", Range(0, 1)) = 1
-        _Aspect("Aspect Raito", Range(0.001, 10)) = 1
+        _Aspect("Aspect Ratio", Range(0.001, 10)) = 1
         _MainTexAspect("MainTex Aspect", Range(0.001, 10)) = 1
         _SubTexAspect("SubTex Aspect", Range(0.001, 10)) = 1
     }
@@ -47,7 +47,7 @@ Shader "Nomlas/202310Poster"
             float _MainTexAspect;
             float _SubTexAspect;
 
-            float2 calcRaito(float i)
+            float2 calcRatio(float i)
             {
                 return i < 1 ? float2(1/i, 1) : float2(1, i);
             }
@@ -65,8 +65,8 @@ Shader "Nomlas/202310Poster"
             {
                 float2 mainTexUV = i.uv;
                 float2 subTexUV = i.uv;
-                mainTexUV = calcRaito(_Aspect) * calcRaito(_MainTexAspect);
-                subTexUV = calcRaito(_Aspect) * calcRaito(_SubTexAspect);
+                mainTexUV = calcRatio(_Aspect) * calcRatio(_MainTexAspect);
+                subTexUV = calcRatio(_Aspect) * calcRatio(_SubTexAspect);
                 fixed4 main = tex2D(_MainTex, (i.uv - 0.5) * mainTexUV + 0.5) * _Transition;
                 if (abs(i.uv.x - 0.5) > 0.5 / mainTexUV.x || abs(i.uv.y - 0.5) > 0.5 / mainTexUV.y)
                 {
