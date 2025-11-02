@@ -12,36 +12,19 @@ Shader "Nomlas/202310Poster(Surface)"
     SubShader
     {
         Tags { "RenderType"="Transparent" "Queue" = "Transparent" }
-        Blend SrcAlpha OneMinusSrcAlpha
         LOD 100
 
-        Pass
-        {
             CGPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
-            // make fog work
-            #pragma multi_compile_fog
+            #pragma surface surf Standard fullforwardshadows alpha:fade
+            #pragma target 3.0
 
-            #include "UnityCG.cginc"
-
-            struct appdata
+            struct Input
             {
-                float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
-            };
-
-            struct v2f
-            {
-                float2 uv : TEXCOORD0;
-                UNITY_FOG_COORDS(1)
-                float4 vertex : SV_POSITION;
+                float2 uv_MainTex;
             };
 
             sampler2D _MainTex;
             sampler2D _SubTex;
-            float4 _MainTex_ST;
-            float4 _SubTex_ST;
             float _Transition;
             float _Aspect;
             float _MainTexAspect;
@@ -52,37 +35,24 @@ Shader "Nomlas/202310Poster(Surface)"
                 return i < 1 ? float2(1/i, 1) : float2(1, i);
             }
 
-            v2f vert (appdata v)
+            void surf (Input IN, inout SurfaceOutputStandard o)
             {
-                v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                UNITY_TRANSFER_FOG(o,o.vertex);
-                return o;
-            }
-
-            fixed4 frag (v2f i) : SV_Target
-            {
-                float2 mainTexUV = i.uv;
-                float2 subTexUV = i.uv;
-                mainTexUV = calcRatio(_Aspect) * calcRatio(_MainTexAspect);
-                subTexUV = calcRatio(_Aspect) * calcRatio(_SubTexAspect);
-                fixed4 main = tex2D(_MainTex, (i.uv - 0.5) * mainTexUV + 0.5) * _Transition;
-                if (abs(i.uv.x - 0.5) > 0.5 / mainTexUV.x || abs(i.uv.y - 0.5) > 0.5 / mainTexUV.y)
+                float2 mainTexUV = calcRatio(_Aspect) * calcRatio(_MainTexAspect);
+                float2 subTexUV = calcRatio(_Aspect) * calcRatio(_SubTexAspect);
+                fixed4 main = tex2D(_MainTex, (IN.uv_MainTex - 0.5) * mainTexUV + 0.5) * _Transition;
+                if (abs(IN.uv_MainTex.x - 0.5) > 0.5 / mainTexUV.x || abs(IN.uv_MainTex.y - 0.5) > 0.5 / mainTexUV.y)
                 {
                     main = 0;
                 }
-                fixed4 sub = tex2D(_SubTex, (i.uv - 0.5) * subTexUV + 0.5) * (1 - _Transition);
-                if (abs(i.uv.x - 0.5) > 0.5 / subTexUV.x || abs(i.uv.y - 0.5) > 0.5 / subTexUV.y)
+                fixed4 sub = tex2D(_SubTex, (IN.uv_MainTex - 0.5) * subTexUV + 0.5) * (1 - _Transition);
+                if (abs(IN.uv_MainTex.x - 0.5) > 0.5 / subTexUV.x || abs(IN.uv_MainTex.y - 0.5) > 0.5 / subTexUV.y)
                 {
                     sub = 0;
                 }
                 fixed4 col = main + sub;
-                // apply fog
-                UNITY_APPLY_FOG(i.fogCoord, col);
-                return col;
+                o.Albedo = col.rgb;
+                o.Alpha = col.a;
             }
             ENDCG
-        }
     }
 }
