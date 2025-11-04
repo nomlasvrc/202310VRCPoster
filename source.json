@@ -2,6 +2,7 @@
     "name":"2023年10月VRC同期会ポスター",
     "id":"com.nomlas.202310poster",
     "url":"https://nomlasvrc.github.io/202310VRCPoster/index.json",
+    "changelogUrl": "https://github.com/nomlasvrc/202310VRCPoster/releases",
     "author":{
         "name":"nomlas",
         "url":"https://x.com/nomlasvrc"
