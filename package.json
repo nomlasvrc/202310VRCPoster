@@ -3,6 +3,7 @@
   "displayName": "2023年10月VRC同期会ポスター",
   "version": "1.3.0",
   "description": "2023年10月VRC同期会ポスター",
+  "changelogUrl": "https://github.com/nomlasvrc/202310VRCPoster/releases",
   "gitDependencies": {},
   "vpmDependencies": {
     "com.vrchat.worlds": ">=3.5.0"
